@@ -1,4 +1,4 @@
-const { objectType, queryType, makeSchema } = require("@nexus/schema");
+const { objectType, queryType, makeSchema, mutationType } = require("@nexus/schema");
 const { nexusPrisma } = require("nexus-plugin-prisma");
 const path = require("path");
 
@@ -52,8 +52,15 @@ const Query = queryType({
   },
 });
 
+const Mutation = mutationType({
+  name: "Mutation",
+  definition(t) {
+    t.crud.createOnePost()
+  }
+})
+
 const schema = makeSchema({
-  types: [Query, Review, Post, User],
+  types: [Query, Review, Post, User, Mutation],
   plugins: [nexusPrisma({experimentalCRUD: true})],
   outputs: {
     schema: path.join(__dirname, "schema.graphql"),

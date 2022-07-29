@@ -42,6 +42,10 @@ input IntFilter {
   notIn: [Int!]
 }
 
+type Mutation {
+  createOnePost(data: PostCreateInput!): Post!
+}
+
 input NestedBoolFilter {
   equals: Boolean
   not: NestedBoolFilter
@@ -103,6 +107,67 @@ type Post {
   titulo: String!
 }
 
+input PostCreateInput {
+  autor: UserCreateNestedOneWithoutPostsInput!
+  conteudo: String!
+  createdAt: DateTime
+  publicado: Boolean
+  Review: ReviewCreateNestedManyWithoutPostInput
+  titulo: String!
+}
+
+input PostCreateManyAutorInput {
+  conteudo: String!
+  createdAt: DateTime
+  id: Int
+  publicado: Boolean
+  titulo: String!
+}
+
+input PostCreateManyAutorInputEnvelope {
+  data: [PostCreateManyAutorInput!]
+  skipDuplicates: Boolean
+}
+
+input PostCreateNestedManyWithoutAutorInput {
+  connect: [PostWhereUniqueInput!]
+  connectOrCreate: [PostCreateOrConnectWithoutAutorInput!]
+  create: [PostCreateWithoutAutorInput!]
+  createMany: PostCreateManyAutorInputEnvelope
+}
+
+input PostCreateNestedOneWithoutReviewInput {
+  connect: PostWhereUniqueInput
+  connectOrCreate: PostCreateOrConnectWithoutReviewInput
+  create: PostCreateWithoutReviewInput
+}
+
+input PostCreateOrConnectWithoutAutorInput {
+  create: PostCreateWithoutAutorInput!
+  where: PostWhereUniqueInput!
+}
+
+input PostCreateOrConnectWithoutReviewInput {
+  create: PostCreateWithoutReviewInput!
+  where: PostWhereUniqueInput!
+}
+
+input PostCreateWithoutAutorInput {
+  conteudo: String!
+  createdAt: DateTime
+  publicado: Boolean
+  Review: ReviewCreateNestedManyWithoutPostInput
+  titulo: String!
+}
+
+input PostCreateWithoutReviewInput {
+  autor: UserCreateNestedOneWithoutPostsInput!
+  conteudo: String!
+  createdAt: DateTime
+  publicado: Boolean
+  titulo: String!
+}
+
 input PostListRelationFilter {
   every: PostWhereInput
   none: PostWhereInput
@@ -142,6 +207,66 @@ type Review {
   id: Int!
   post: Post!
   reviewer: User!
+}
+
+input ReviewCreateManyPostInput {
+  createdAt: DateTime
+  id: Int
+  nova: Int!
+  reviewerId: Int!
+}
+
+input ReviewCreateManyPostInputEnvelope {
+  data: [ReviewCreateManyPostInput!]
+  skipDuplicates: Boolean
+}
+
+input ReviewCreateManyReviewerInput {
+  createdAt: DateTime
+  id: Int
+  nova: Int!
+  postId: Int!
+}
+
+input ReviewCreateManyReviewerInputEnvelope {
+  data: [ReviewCreateManyReviewerInput!]
+  skipDuplicates: Boolean
+}
+
+input ReviewCreateNestedManyWithoutPostInput {
+  connect: [ReviewWhereUniqueInput!]
+  connectOrCreate: [ReviewCreateOrConnectWithoutPostInput!]
+  create: [ReviewCreateWithoutPostInput!]
+  createMany: ReviewCreateManyPostInputEnvelope
+}
+
+input ReviewCreateNestedManyWithoutReviewerInput {
+  connect: [ReviewWhereUniqueInput!]
+  connectOrCreate: [ReviewCreateOrConnectWithoutReviewerInput!]
+  create: [ReviewCreateWithoutReviewerInput!]
+  createMany: ReviewCreateManyReviewerInputEnvelope
+}
+
+input ReviewCreateOrConnectWithoutPostInput {
+  create: ReviewCreateWithoutPostInput!
+  where: ReviewWhereUniqueInput!
+}
+
+input ReviewCreateOrConnectWithoutReviewerInput {
+  create: ReviewCreateWithoutReviewerInput!
+  where: ReviewWhereUniqueInput!
+}
+
+input ReviewCreateWithoutPostInput {
+  createdAt: DateTime
+  nova: Int!
+  reviewer: UserCreateNestedOneWithoutReviewInput!
+}
+
+input ReviewCreateWithoutReviewerInput {
+  createdAt: DateTime
+  nova: Int!
+  post: PostCreateNestedOneWithoutReviewInput!
 }
 
 input ReviewListRelationFilter {
@@ -196,6 +321,42 @@ type User {
   id: Int!
   nome: String!
   posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int): [Post!]!
+}
+
+input UserCreateNestedOneWithoutPostsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutPostsInput
+  create: UserCreateWithoutPostsInput
+}
+
+input UserCreateNestedOneWithoutReviewInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutReviewInput
+  create: UserCreateWithoutReviewInput
+}
+
+input UserCreateOrConnectWithoutPostsInput {
+  create: UserCreateWithoutPostsInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateOrConnectWithoutReviewInput {
+  create: UserCreateWithoutReviewInput!
+  where: UserWhereUniqueInput!
+}
+
+input UserCreateWithoutPostsInput {
+  createdAt: DateTime
+  email: String!
+  nome: String!
+  Review: ReviewCreateNestedManyWithoutReviewerInput
+}
+
+input UserCreateWithoutReviewInput {
+  createdAt: DateTime
+  email: String!
+  nome: String!
+  posts: PostCreateNestedManyWithoutAutorInput
 }
 
 input UserOrderByWithRelationInput {

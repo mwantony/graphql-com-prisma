@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require("apollo-server");
 const { PrismaClient } = require("@prisma/client");
+const { GraphQLSchema, GraphQLObjectType } = require("graphql");
 const prisma = new PrismaClient();
 
 const typeDefs = gql`
@@ -26,7 +27,12 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createUserAndPost(nome: String, email: String, titulo: String, conteudo: String): User
+    createUserAndPost(
+      nome: String
+      email: String
+      titulo: String
+      conteudo: String
+    ): User
   }
 `;
 
@@ -65,14 +71,14 @@ const resolvers = {
           posts: {
             create: {
               titulo: args.titulo,
-              conteudo: args.conteudo
-            }
-          }
-        }
-      })
-      return newUser
-    }
-  }
+              conteudo: args.conteudo,
+            },
+          },
+        },
+      });
+      return newUser;
+    },
+  },
 };
 
 const server = new ApolloServer({ typeDefs, resolvers, context: prisma });

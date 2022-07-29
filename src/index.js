@@ -3,7 +3,6 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const typeDefs = gql`
-
   scalar DateTime
 
   type User {
@@ -22,16 +21,36 @@ const typeDefs = gql`
 
   type Query {
     users: [User]
+    postsByUser(id: Int): [Post]
+    postsByReviewer(id: Int): [Post]
   }
 `;
 
 const resolvers = {
   Query: {
-    users: async () => await prisma.user.findMany({
-      include: {
-        posts: true
-      }
-    })
+    users: async () =>
+      await prisma.user.findMany({
+        include: {
+          posts: true,
+        },
+      }),
+    postsByUser: async (root, { id }) => {
+      return prisma.user
+        .findUnique({
+          where: { id: Number(id) },
+        })
+        .posts();
+    },
+    postsByReviewer: async (root, { id }) => {
+      return prisma.review
+        .findUnique({
+          where: {
+            id: Number(id),
+          },
+        })
+        .reviewer()
+        .posts();
+    },
   },
 };
 
